@@ -8,6 +8,7 @@ public class ServerThread extends Thread{
     private BufferedReader in;
     private BufferedWriter out;
     public static Logger log = Logger.getInstance();
+    private String nick;
 
     public ServerThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -20,8 +21,8 @@ public class ServerThread extends Thread{
     public void run() {
         String word;
         try {
-
             word = in.readLine();
+            nick = word.substring(13);
             try {
                 out.write(word + "\n");
                 out.flush();
@@ -33,17 +34,24 @@ public class ServerThread extends Thread{
                     if (word.equalsIgnoreCase("/exit")) {
                         this.downService();
                         break;
-                    }
-                    log.log(word);
-                    System.out.println(word);
-                    for (ServerThread vr : Server.serverList) {
-                        vr.send(word);
+                    } else if (word.contains("/nick")) {
+                        String[] array = word.split("-", 5);
+                        for (ServerThread vr : Server.serverList) {
+                            if (vr.nick.equals(array[3])) {
+                                String[] tmp = word.split("'", 3);
+                                vr.send("Whisper from " + tmp[1] + ": " + array [4]);
+                            }
+                        }
+                    } else {
+                        log.log(word);
+                        System.out.println(word);
+                        for (ServerThread vr : Server.serverList) {
+                            vr.send(word);
+                        }
                     }
                 }
             } catch (NullPointerException ignored) {
             }
-
-
         } catch (IOException e) {
             this.downService();
         }

@@ -24,7 +24,7 @@ public class Logger {
     public void log(String msg) {
         try (FileWriter writer = new FileWriter(myFile, true);
              BufferedWriter bw = new BufferedWriter(writer)) {
-            bw.write(LocalDateTime.now() + msg + '\n');
+            bw.write(LocalDateTime.now() + " " + msg + '\n');
         } catch (IOException e) {
             e.printStackTrace();
         }

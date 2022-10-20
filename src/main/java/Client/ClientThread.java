@@ -65,19 +65,13 @@ public class ClientThread {
             try {
                 while (true) {
                     msg = in.readLine();
-                    if (msg.startsWith("/nick")) {
-                        String[] arr = msg.split("-", 3);
-                        String temp = arr[1];
-                        if (nickname.equals(temp)){
-                            log.log(msg);
-                            System.out.println(msg);
-                        }
-                    } else if (msg.equals("/exit")) {
+                    if (msg.equals("/exit")) {
                         ClientThread.this.downService();
                         break;
+                    } else {
+                        log.log(msg);
+                        System.out.println(msg);
                     }
-                    log.log(msg);
-                    System.out.println(msg);
                 }
             } catch (IOException e) {
                 ClientThread.this.downService();
@@ -98,15 +92,13 @@ public class ClientThread {
                         ClientThread.this.downService();
                         break;
                     } else {
-                        out.write("(" + LocalDateTime.now() + ") " + nickname + ": " + userWord + "\n");
+                        out.write(" (" + LocalDateTime.now() + ") '" + nickname + "': " + userWord + "\n");
                         log.log(userWord);
                     }
                     out.flush();
                 } catch (IOException e) {
                     ClientThread.this.downService();
-
                 }
-
             }
         }
     }
